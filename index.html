@@ -14,12 +14,13 @@
     .heart { display: block; font-size: 76px; line-height: 1.3; margin: 30px auto 20px; filter: drop-shadow(0 10px 12px #d6355b22); }
     h1 { font-size: 64px; line-height: 1.08; font-weight: 400; margin: 0 auto 22px; letter-spacing: 0; }
     h1 em { color: #d73559; }
+    .date-question { display: block; font-size: 40px; margin-top: 12px; }
     .subtitle { font: 16px/1.8 Arial, sans-serif; color: #996271; margin: 0 0 32px; }
     .buttons { display: flex; justify-content: center; gap: 16px; min-height: 54px; }
     button { width: 134px; height: 52px; border-radius: 6px; border: 1px solid #dfbdc6; font: 600 16px Arial, sans-serif; cursor: pointer; touch-action: manipulation; }
     #yes { color: white; background: #ce3154; border-color: #ce3154; box-shadow: 0 6px 18px #ce315423; transition: background .2s, transform .2s; }
     #yes:hover { background: #ac2140; transform: translateY(-2px); }
-    #no { color: #985466; background: #fffafb; z-index: 5; }
+    #no { color: #985466; background: #fffafb; z-index: 5; padding: 6px 10px; font-size: 14px; line-height: 1.2; }
     button:focus-visible { outline: 3px solid #792638; outline-offset: 5px; }
     .footer { margin-top: 58px; font: italic 14px Georgia, serif; color: #aa7380; }
     #balloons { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
@@ -41,8 +42,8 @@
       <p class="eyebrow">For my favorite person</p>
       <span class="heart" aria-hidden="true">💌</span>
       <div id="question">
-        <h1>Will you be my<br><em>Valentine?</em></h1>
-        <p class="subtitle">A little question. A whole lot of love.</p>
+        <h1>dhanu<em class="date-question">will you be my Date ?</em></h1>
+        <p class="subtitle">Choose wisely (The "No" button is ...shy).</p>
         <div class="buttons">
           <button id="yes" type="button">Yes ♥</button>
           <button id="no" type="button">No</button>
@@ -50,17 +51,13 @@
       </div>
       <div id="answer" hidden>
         <h1 tabindex="-1" id="answer-heading">I knew you'd<br><em>say yes!</em></h1>
-        <p class="subtitle">It's a date. I'll meet you today at...</p>
-        <div class="date"><strong id="hotel"></strong><span id="time"></span></div>
+        <p class="subtitle">It's a date. I'll meet you at your favourite location ...</p>
+        <div class="date"><span>whenever You want &middot; Just us two &#9829;</span></div>
       </div>
       <p class="footer" id="footer">You make ordinary days feel a little more magical.</p>
     </section>
   </main>
   <script>
-    // Personalize these two values before sharing the page.
-    const hotelName = 'The Rosewood Hotel';
-    const meetingTime = '7:00 PM';
-
     const balloons = document.getElementById('balloons');
     for (let i = 0; i < 14; i++) {
       const balloon = document.createElement('span');
@@ -76,8 +73,14 @@
 
     const no = document.getElementById('no');
     const yes = document.getElementById('yes');
+    const noMessages = ["Don't do this", 'Please no', 'Please no', 'This could be a mistake'];
+    let noAttempts = 0;
     function moveNo(event) {
       if (event) event.preventDefault();
+      if (event) {
+        no.textContent = noMessages[noAttempts % noMessages.length];
+        noAttempts++;
+      }
       const margin = 16;
       const maxX = Math.max(margin, window.innerWidth - no.offsetWidth - margin);
       const maxY = Math.max(margin, window.innerHeight - no.offsetHeight - margin);
@@ -102,15 +105,16 @@
     }
     no.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') moveNo(event); });
     no.addEventListener('pointerdown', moveNo);
-    no.addEventListener('click', moveNo);
+    no.addEventListener('click', event => {
+      // Pointer attempts are handled above; clicks with no detail come from the keyboard.
+      if (event.detail === 0) moveNo(event);
+    });
     window.addEventListener('resize', () => { if (no.style.position === 'fixed' && !no.hidden) moveNo(); });
     yes.addEventListener('click', () => {
-      document.getElementById('hotel').textContent = hotelName;
-      document.getElementById('time').textContent = `Today · ${meetingTime} · Just us two ♥`;
       document.getElementById('question').hidden = true;
       document.getElementById('answer').hidden = false;
       document.querySelector('.heart').textContent = '💖';
-      document.getElementById('footer').textContent = "Can't wait to see you, Valentine.";
+      document.getElementById('footer').textContent = "Can't wait to see you, dhanu.";
       no.hidden = true;
       document.getElementById('answer-heading').focus();
     });
